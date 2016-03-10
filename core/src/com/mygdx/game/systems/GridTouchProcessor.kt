@@ -3,6 +3,9 @@ package com.mygdx.game.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.math.Vector3
 import com.mygdx.game.algorithm.ShortPathFinder
 import com.mygdx.game.components.NodeComponent
 import com.mygdx.game.components.TransformComponent
@@ -24,7 +27,7 @@ data class TouchGridConfig(val entitiesComponents: List<Pair<NodeComponent, Tran
 /**
  * Handler class for grid selection.
  */
-class GridTouchProcessor(val config: TouchGridConfig, val shortPathFinder: ShortPathFinder) : InputProcessor {
+class GridTouchProcessor(val config: TouchGridConfig, val shortPathFinder: ShortPathFinder, val camera : OrthographicCamera) : InputProcessor {
     val gridNodes = config.entitiesComponents
 
     var startNode: NodeComponent? = null
@@ -44,6 +47,8 @@ class GridTouchProcessor(val config: TouchGridConfig, val shortPathFinder: Short
     override fun keyTyped(p0: Char): Boolean = true
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+        camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
+        camera.update()
         val touchedNode = gridNodes.find { node ->
             NodeComponent.isTouched(screenX, screenY, node.second.posit, config.nodeWidth, config.nodeHeight)
         }

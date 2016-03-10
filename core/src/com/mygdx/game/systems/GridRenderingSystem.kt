@@ -34,8 +34,6 @@ class GridRenderingSystem(val batch: SpriteBatch, val config: GridConfig) : Iter
         val transformComponent = transformM.get(entity)
         val nodeComponent = nodeM.get(entity)
 
-        //        font.color = Color.WHITE
-
         shapeRenderer.projectionMatrix = (batch.projectionMatrix);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -49,7 +47,7 @@ class GridRenderingSystem(val batch: SpriteBatch, val config: GridConfig) : Iter
 
         font.color = Color.BLACK
 
-        if(nodeComponent.id.contains("T")) font.draw(batch, "${nodeComponent.id}", transformComponent.posit.x + nodeComponent.nodeWidth.toFloat() / 2f, transformComponent.posit.y + nodeComponent.nodeHeight.toFloat() / 2f)
+        if(nodeComponent.id.contains("T") || !nodeComponent.id.contains("F")) font.draw(batch, "${nodeComponent.id}", transformComponent.posit.x + nodeComponent.nodeWidth.toFloat() / 2f, transformComponent.posit.y + nodeComponent.nodeHeight.toFloat() / 2f)
 
         batch.end()
     }

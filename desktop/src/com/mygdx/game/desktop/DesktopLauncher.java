@@ -14,7 +14,7 @@ public class DesktopLauncher {
     public static void runGame() {
         ConfigParser.INSTANCE.parseSettings();
 //        IndexedAStarPathFinderMain.searchNodePath_WhenSearchCanHitDeadEnds_ExpectedOuputPathFound();
-        GridConfig config = new GridConfig(80f, 80f, 0f, 1440f, 1440f, null);
+        GridConfig config = new GridConfig(80f, 80f, 2f, 1440f, 1440f, null);
         LwjglApplicationConfiguration appConfig = new LwjglApplicationConfiguration();
         appConfig.width = (int) config.getGridWidth();
         appConfig.height = (int) config.getGridHeight();

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -20,11 +21,16 @@ class AStarGame(val graphConfig: GridConfig) : Game() {
     internal lateinit var batcher: SpriteBatch
     internal lateinit var img: Texture
     internal lateinit var atlas : TextureAtlas
+    internal lateinit var camera : OrthographicCamera
 
     val engine = PooledEngine()
 
     override fun create() {
+        camera = OrthographicCamera(1440f, 1440f)
+        camera.translate(720f, 720f)
+        camera.update()
         batcher = SpriteBatch()
+        batcher.projectionMatrix = camera.combined
         atlas = TextureAtlas("orig/pack.atlas")
         img = atlas.regions.get(0).texture
 
@@ -40,7 +46,7 @@ class AStarGame(val graphConfig: GridConfig) : Game() {
         val heightInset = (graphConfig.nodeHeight - graphConfig.gapXY).toInt()
 
         val touchGridConfig = TouchGridConfig.generateConfig(graph.nodeEntities, widthInset, heightInset, graphConfig.executor)
-        val gridTouchHandler = GridTouchProcessor(touchGridConfig, shortPath)
+        val gridTouchHandler = GridTouchProcessor(touchGridConfig, shortPath, camera)
 
         Gdx.input.inputProcessor = gridTouchHandler
 
