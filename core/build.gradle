@@ -15,10 +15,15 @@ buildscript {
     repositories {
         mavenCentral()
     }
+    dependencies {
+    }
 }
 repositories {
     mavenCentral()
 }
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+sourceSets {
+    main.java.srcDirs += 'src/kotlin'
 }
