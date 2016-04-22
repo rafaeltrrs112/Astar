@@ -1,27 +1,28 @@
 package squares.components;
 
 import com.badlogic.ashley.core.Component;
+import squares.components.Enums.TileTypes;
 
 /**
  * A tile component representation.
  */
 public class TileComponent implements Component {
-    private final Enums.TileTypes defaultType;
-    private Enums.TileTypes currentType;
+    private final TileTypes defaultType;
+    private TileTypes currentType;
 
-    public TileComponent(Enums.TileTypes defaultType) {
+    public TileComponent(TileTypes defaultType) {
         this.defaultType = defaultType;
     }
 
-    public Enums.TileTypes getDefaultType() {
+    public TileTypes getDefaultType() {
         return defaultType;
     }
 
-    public Enums.TileTypes getCurrentType() {
+    public TileTypes getCurrentType() {
         return currentType;
     }
 
-    public void setCurrentType(Enums.TileTypes currentType) {
+    public void setCurrentType(TileTypes currentType) {
         this.currentType = currentType;
     }
 

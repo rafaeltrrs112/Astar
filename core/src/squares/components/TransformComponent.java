@@ -30,4 +30,5 @@ public class TransformComponent implements Component {
     public float y() {
         return position.y;
     }
+
 }

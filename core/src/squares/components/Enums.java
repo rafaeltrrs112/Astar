@@ -4,13 +4,13 @@ package squares.components;
  * Container constants class for the enums.
  */
 public class Enums {
-    enum TileTypes {
+    public enum TileTypes {
         RedPlayerTile,
         BluePlayerTile,
         Occupied
     }
 
-    enum UnitMovement {
+    public enum UnitMovement {
         North,
         South,
         East,
