@@ -7,8 +7,12 @@ import squares.components.Enums.TileTypes;
  * A tile component representation.
  */
 public class TileComponent implements Component {
-    private final TileTypes defaultType;
+    private TileTypes defaultType;
     private TileTypes currentType;
+
+    public void setDefaultType(TileTypes defaultType) {
+        this.defaultType = defaultType;
+    }
 
     public TileComponent(TileTypes defaultType) {
         this.defaultType = defaultType;

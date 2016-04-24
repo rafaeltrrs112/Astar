@@ -7,7 +7,6 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.utils.Array;
 import squares.character.MainCharacter;
-import squares.components.Enums;
 import squares.components.Enums.TileTypes;
 import squares.components.Enums.UnitMovement;
 import squares.components.PlayerComponent;
@@ -15,7 +14,6 @@ import squares.components.TileComponent;
 import squares.components.TransformComponent;
 
 import static com.badlogic.gdx.Gdx.input;
-
 
 /**
  * Movement system definition.
