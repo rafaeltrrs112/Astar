@@ -32,26 +32,33 @@ public class PCMovementSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        System.out.println("Character Movement System processing");
-
-        if (input.isKeyJustPressed(Keys.W)) {
-            mainCharacter.Move(UnitMovement.North);
-        } else if (input.isKeyJustPressed(Keys.A)) {
-            mainCharacter.Move(UnitMovement.West);
-        } else if (input.isKeyJustPressed(Keys.S)) {
-            mainCharacter.Move(UnitMovement.South);
-        } else if (input.isKeyJustPressed(Keys.D)) {
-            mainCharacter.Move(UnitMovement.East);
-        }
-
         final TransformComponent currentPosition = mainCharacter.getTransformComponent();
 
-        System.out.println("currentPosition = " + currentPosition);
+        clearTile(currentPosition);
+
+
+
+        if (input.isKeyJustPressed(Keys.W)) {
+            mainCharacter.Move(UnitMovement.North, gridField);
+        } else if (input.isKeyJustPressed(Keys.A)) {
+            mainCharacter.Move(UnitMovement.West, gridField);
+        } else if (input.isKeyJustPressed(Keys.S)) {
+            mainCharacter.Move(UnitMovement.South, gridField);
+        } else if (input.isKeyJustPressed(Keys.D)) {
+            mainCharacter.Move(UnitMovement.East, gridField);
+        }
+
 
         Entity targetTileEntity = gridField.get((int) currentPosition.y()).get((int) currentPosition.x());
         TileComponent tile = tileMapper.get(targetTileEntity);
 
         tile.setCurrentType(TileTypes.Occupied);
+    }
+
+    private void clearTile(TransformComponent currentPosition) {
+        Entity prevTile = gridField.get((int) currentPosition.y()).get((int) currentPosition.x());
+        TileComponent prevTileComp = tileMapper.get(prevTile);
+        prevTileComp.setCurrentType(prevTileComp.getDefaultType());
     }
 
     private void clearGrid() {

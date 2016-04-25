@@ -1,8 +1,8 @@
 package squares.templates;
 
 import com.badlogic.ashley.core.Entity;
-import com.uwsoft.editor.renderer.components.TransformComponent;
 import squares.components.PlayerComponent;
+import squares.components.TransformComponent;
 
 /**
  */

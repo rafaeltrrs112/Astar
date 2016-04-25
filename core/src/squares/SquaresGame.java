@@ -17,34 +17,33 @@ import squares.components.TransformComponent;
 import squares.systems.GridRenderSystem;
 import squares.systems.PCMovementSystem;
 
+import java.awt.*;
+
 import static squares.generators.Initializer.initializeGrid;
 import static squares.generators.Initializer.playerTemplate;
 
 /**
  */
 public class SquaresGame extends Game {
-    private static Viewport viewport;
-    private static SpriteBatch spriteBatch;
-    private static OrthographicCamera camera;
 
     private Engine engine = new PooledEngine();
 
+    /*
+     * The game initialization phase.
+     * 1. Create the entities that will be representing the grid and add them all to the ECS engine.
+     * 2. Create the player controlled entity.
+     */
     @Override
     public void create() {
-        viewport = new FitViewport(1280, 720);
-
-        spriteBatch = new SpriteBatch();
-        spriteBatch.setProjectionMatrix(camera.combined);
-        camera = new OrthographicCamera();
-
         Array<Array<Entity>> gridField = initializeGrid();
-
         addAll(engine, gridField);
+
 
         Entity player = playerTemplate.makeEntity();
         EntitySystem movementSystem = new PCMovementSystem(new MainCharacter(player, player.getComponent(TransformComponent.class)), gridField);
 
-        engine.addSystem(new GridRenderSystem(spriteBatch));
+        engine.addEntity(player);
+        engine.addSystem(new GridRenderSystem());
         engine.addSystem(movementSystem);
     }
 
@@ -57,7 +56,7 @@ public class SquaresGame extends Game {
     }
 
     public void render() {
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+        Gdx.gl.glClearColor(1,1,1,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         engine.update(Gdx.graphics.getDeltaTime());

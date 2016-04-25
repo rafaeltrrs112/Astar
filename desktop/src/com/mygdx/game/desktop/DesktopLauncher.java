@@ -12,10 +12,10 @@ public class DesktopLauncher {
     public static void runGame() {
         LwjglApplicationConfiguration appConfig = new LwjglApplicationConfiguration();
 
-        appConfig.height = 720;
-        appConfig.width = 1280;
+        appConfig.height = 1080;
+        appConfig.width = 1920;
 
-        new LwjglApplication(new SquaresGame());
+        new LwjglApplication(new SquaresGame(), appConfig);
 
     }
 }
