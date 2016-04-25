@@ -20,16 +20,19 @@ public class WeaponSystem extends IntervalIteratingSystem {
     private Array<Array<Entity>> gridField;
 
     public WeaponSystem(Array<Array<Entity>> gridField) {
-        super(Family.all(TransformComponent.class, Blaster.class).get(), 0.075f);
+        super(Family.all(TransformComponent.class, Blaster.class).get(), 0.2f);
         this.gridField = gridField;
     }
 
     private void process(Entity entity, TransformComponent transformComponent, Blaster blaster) {
         System.out.println(blaster.isActive);
         if (blaster.isActive) {
-            clearGrid();
 
             float nextXPosit = transformComponent.x() + 1;
+            TileComponent prevTileComp = tileM.get(gridField.get((int) transformComponent.y()).get((int) transformComponent.x()));
+            if(prevTileComp.getCurrentType() == Enums.TileTypes.BlasterOccupied){
+                prevTileComp.setCurrentType(prevTileComp.getDefaultType());
+            }
             if (!(nextXPosit > 9 || nextXPosit < 0)) {
                 transformComponent.setPosition(transformComponent.x() + 1, transformComponent.y());
                 System.out.println(transformComponent.getPosition());
@@ -49,7 +52,7 @@ public class WeaponSystem extends IntervalIteratingSystem {
             for (Entity tile : row) {
                 TileComponent tileComp = tileM.get(tile);
                 if (tileComp.getCurrentType() == Enums.TileTypes.BlasterOccupied) {
-                    tileComp.setCurrentType(tileComp.getDefaultType());
+//                    tileComp.setCurrentType(tileComp.getDefaultType());
                     return;
                 }
             }

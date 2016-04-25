@@ -41,11 +41,15 @@ public class SquaresGame extends Game {
         initPlayer(player, 2, 2);
 
         Entity blaster = blasterTemplate.makeEntity();
+        Entity blaster2 = blasterTemplate.makeEntity();
 
         engine.addEntity(blaster);
+        engine.addEntity(blaster2);
+
         initSystems();
         PCPlayerCharacter mainPlayer = new PCPlayerCharacter(player, Enums.TileTypes.GreenPlayerOccupied);
         mainPlayer.getPlayerComponent().spells.addLast(blaster);
+        mainPlayer.getPlayerComponent().spells.addLast(blaster2);
         Gdx.input.setInputProcessor(new UserInputHandler(mainPlayer, gridField));
     }
 
