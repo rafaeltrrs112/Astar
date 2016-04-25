@@ -1,18 +1,13 @@
 package squares.systems;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import squares.components.Enums;
+import squares.components.spells.Blaster;
 import squares.components.TagComponent;
 import squares.components.TileComponent;
 import squares.components.TransformComponent;
@@ -34,9 +29,7 @@ public class GridRenderSystem extends IteratingSystem {
 
     private void processEntityComponents(Entity entity, TransformComponent transformComponent, TileComponent tileComponent, TagComponent tagComponent, float delta) {
         /// Do stuff here.
-        Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND); // Or GL20
         shapeRenderer.begin(ShapeType.Filled);
-
         switch (tileComponent.getCurrentType()) {
             case RedPlayerTile:
                 shapeRenderer.setColor(Color.FIREBRICK);
@@ -46,8 +39,12 @@ public class GridRenderSystem extends IteratingSystem {
                 shapeRenderer.setColor(Color.NAVY);
                 shapeRenderer.rect(transformComponent.x(), transformComponent.y(), Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
                 break;
-            case Occupied:
+            case GreenPlayerOccupied:
                 shapeRenderer.setColor(Color.FOREST);
+                shapeRenderer.rect(transformComponent.x(), transformComponent.y(), Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                break;
+            case BlasterOccupied:
+                shapeRenderer.setColor(Color.YELLOW);
                 shapeRenderer.rect(transformComponent.x(), transformComponent.y(), Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
                 break;
             default:
@@ -65,4 +62,5 @@ public class GridRenderSystem extends IteratingSystem {
         final TagComponent tagComponent = tagMapper.get(entity);
         processEntityComponents(entity, transformComponent, tileComponent, tagComponent, deltaTime);
     }
+
 }

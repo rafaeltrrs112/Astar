@@ -7,7 +7,9 @@ public class Enums {
     public enum TileTypes {
         RedPlayerTile,
         BluePlayerTile,
-        Occupied
+        GreenPlayerOccupied,
+        CoralPlayerOccupied,
+        BlasterOccupied
     }
 
     public enum UnitMovement {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import squares.components.TagComponent;
 import squares.components.TileComponent;
 import squares.components.TransformComponent;
+import squares.templates.BlasterTemplate;
 import squares.templates.PlayerTemplate;
 import squares.templates.Template;
 import squares.templates.TileTemplate;
@@ -19,6 +20,8 @@ import static squares.generators.Constants.*;
 public class Initializer {
     public static Template tileTemplate = new TileTemplate();
     public static Template playerTemplate = new PlayerTemplate();
+    public static Template blasterTemplate = new BlasterTemplate();
+
     private static final float ADJUST_X = (WIDTH / 4);
     private static final float ADJUST_Y = (HEIGHT / 4);
     public static final float TILE_SIZE = 150;
@@ -43,7 +46,7 @@ public class Initializer {
                 TileComponent tileComp = entity.getComponent(TileComponent.class);
 
                 tileComp.setCurrentType(defaultType);
-                tileComp.setDefaultType(tileComp.getCurrentType());
+                tileComp.setDefaultType(defaultType);
 
                 row.add(entity);
             }

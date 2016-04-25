@@ -23,6 +23,10 @@ public class TransformComponent implements Component {
         this.position = position;
     }
 
+    public void setPosition(float x, float y){
+        this.position.set(x, y);
+    }
+
     public float x() {
         return position.x;
     }
