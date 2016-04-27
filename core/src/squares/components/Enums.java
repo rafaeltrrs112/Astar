@@ -9,7 +9,8 @@ public class Enums {
         BluePlayerTile,
         GreenPlayerOccupied,
         CoralPlayerOccupied,
-        BlasterOccupied
+        BlasterOccupied,
+        SwordOccupied
     }
 
     public enum UnitMovement {

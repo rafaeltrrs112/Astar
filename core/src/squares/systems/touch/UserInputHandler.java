@@ -51,7 +51,7 @@ public class UserInputHandler implements InputProcessor {
         }
         setTile();
 
-        return false;
+        return true;
     }
 
     private void setTile() {

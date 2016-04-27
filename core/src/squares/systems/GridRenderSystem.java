@@ -7,7 +7,6 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import squares.components.spells.Blaster;
 import squares.components.TagComponent;
 import squares.components.TileComponent;
 import squares.components.TransformComponent;
@@ -47,13 +46,16 @@ public class GridRenderSystem extends IteratingSystem {
                 shapeRenderer.setColor(Color.YELLOW);
                 shapeRenderer.rect(transformComponent.x(), transformComponent.y(), Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
                 break;
+            case SwordOccupied:
+                shapeRenderer.setColor(Color.LIGHT_GRAY);
+                shapeRenderer.rect(transformComponent.x(), transformComponent.y(), Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid tile type");
         }
 
         shapeRenderer.end();
     }
-
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
