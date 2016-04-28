@@ -1,53 +1,46 @@
 package squares;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.uwsoft.editor.renderer.components.TransformComponent;
+import squares.character.CharacterEntity;
+import squares.character.EnemyCharacter;
 import squares.character.PCPlayerCharacter;
-import squares.components.Enums;
+import squares.components.Enums.TileTypes;
+import squares.components.PlayerComponent;
 import squares.components.TileComponent;
-import squares.components.TransformComponent;
-import squares.generators.BlasterGenerator;
-import squares.generators.SpellMaker;
-import squares.generators.SwordGenertor;
+import squares.templates.generators.BlasterGenerator;
+import squares.templates.generators.SpellMaker;
+import squares.templates.generators.SwordGenerator;
 import squares.spells.ChipButton;
 import squares.stages.MainStage;
 import squares.systems.GridRenderSystem;
 import squares.systems.WeaponSystem;
-import squares.systems.touch.UserInputHandler;
+import squares.touch.CharacterHandler;
+import squares.touch.EnemyHandler;
+import squares.touch.UserInputHandler;
 
-import static squares.generators.Initializer.initializeGrid;
-import static squares.generators.Initializer.playerTemplate;
+import static squares.utils.Initializer.*;
 
 
 /**
  */
 public class SquaresGame extends Game {
     private Stage stage;
-    private Skin skin;
 
     private Engine engine = new PooledEngine();
     private final Array<Array<Entity>> gridField = initializeGrid();
-    private final ComponentMapper<TileComponent> tileMapper = ComponentMapper.getFor(TileComponent.class);
-    private SpellMaker blasterGenerator;
-    private SpellMaker swordGenerator;
+    private SpellMaker blasterGenerator = new BlasterGenerator(engine);
+    private SpellMaker swordGenerator = new SwordGenerator(engine);
 
     /*
      * The game initialization phase.
@@ -56,37 +49,55 @@ public class SquaresGame extends Game {
      */
     @Override
     public void create() {
-        addAll(engine, gridField);
-        blasterGenerator = new BlasterGenerator(engine);
-        swordGenerator = new SwordGenertor(engine);
-
+        initGrid(engine, gridField);
         Entity player = playerTemplate.makeEntity();
+        Entity enemy = playerTemplate.makeEntity();
 
-        initPlayer(player, 2, 2);
+        initPlayer(player, TileTypes.GreenPlayerOccupied, TileTypes.BluePlayerTile, 2, 2);
+        initPlayer(enemy, TileTypes.CoralPlayerOccupied, TileTypes.RedPlayerTile, 8, 2);
 
-        Entity blaster = blasterGenerator.makeSpell();
-        Entity sword = swordGenerator.makeSpell();
-        Entity sword2 = swordGenerator.makeSpell();
+        Entity blaster = blasterGenerator.makeSpell(30);
+        Entity sword = swordGenerator.makeSpell(80);
+        Entity blaster2 = blasterGenerator.makeSpell(100);
+        Entity blaster3 = blasterGenerator.makeSpell(100);
+        Entity blaster4 = blasterGenerator.makeSpell(100);
 
         initSystems();
 
-        PCPlayerCharacter mainPlayer = new PCPlayerCharacter(player, Enums.TileTypes.GreenPlayerOccupied);
+        CharacterEntity mainPlayer = new PCPlayerCharacter(player, TileTypes.GreenPlayerOccupied);
+        CharacterEntity enemyCharacter = new EnemyCharacter(enemy, TileTypes.CoralPlayerOccupied);
 
         mainPlayer.getPlayerComponent().spells.addLast(blaster);
-
         mainPlayer.getPlayerComponent().spells.addLast(sword);
-        mainPlayer.getPlayerComponent().spells.addLast(sword2);
 
-        UserInputHandler handler = new UserInputHandler(mainPlayer, gridField);
-        createStage(new ScreenViewport(), handler, mainPlayer, blaster, sword);
+        enemyCharacter.getPlayerComponent().spells.addLast(blaster2);
+        enemyCharacter.getPlayerComponent().spells.addLast(blaster3);
+        enemyCharacter.getPlayerComponent().spells.addLast(blaster4);
+
+        CharacterHandler playerHandler = new UserInputHandler(mainPlayer, gridField);
+        CharacterHandler enemyHandler = new EnemyHandler(enemyCharacter, gridField);
+
+        Array<CharacterHandler> handlers = Array.with(enemyHandler, playerHandler);
+
+        stage = initStage(new ScreenViewport(), handlers, mainPlayer);
 
         Gdx.input.setInputProcessor(stage);
     }
 
-    private void initPlayer(Entity player, int x, int y) {
-        player.getComponent(TransformComponent.class).setPosition(x, y);
-        gridField.get(y).get(x).getComponent(TileComponent.class).setCurrentType(Enums.TileTypes.GreenPlayerOccupied);
-        engine.addEntity(player);
+    private void initPlayer(Entity characterEntity, TileTypes occupyType, TileTypes allergicType, float x, float y) {
+        TransformComponent transformComp = characterEntity.getComponent(TransformComponent.class);
+        PlayerComponent playerComponent = characterEntity.getComponent(PlayerComponent.class);
+        playerComponent.occupyType = occupyType;
+
+        playerComponent.allergies.add(allergicType);
+
+        transformComp.x = x;
+        transformComp.y = y;
+
+        TileComponent tileComp = gridField.get((int) transformComp.y).get((int) transformComp.x).getComponent(TileComponent.class);
+        tileComp.setCurrentType(occupyType);
+        tileComp.occupier = characterEntity.getComponent(PlayerComponent.class);
+        engine.addEntity(characterEntity);
     }
 
     private void initSystems() {
@@ -94,7 +105,7 @@ public class SquaresGame extends Game {
         engine.addSystem(new GridRenderSystem());
     }
 
-    private static void addAll(Engine engine, Array<Array<Entity>> gridField) {
+    private static void initGrid(Engine engine, Array<Array<Entity>> gridField) {
         for (Array<Entity> gridTile : gridField) {
             for (Entity tile : gridTile) {
                 engine.addEntity(tile);
@@ -102,24 +113,19 @@ public class SquaresGame extends Game {
         }
     }
 
-    private void createStage(Viewport viewport, UserInputHandler handler, PCPlayerCharacter character, Entity blaster, Entity sword) {
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-
-        final TextButton blasterButton = new ChipButton("", makeButtonStyle("blaster.png"), character, blasterGenerator);
-        final TextButton swordButton = new ChipButton("", makeButtonStyle("widesword.png"), character, swordGenerator);
-
-        blasterButton.setWidth(100);
-        blasterButton.setHeight(100);
+    private Stage initStage(Viewport viewport, Array<CharacterHandler> handlers, CharacterEntity character) {
+        final TextButton blasterButton = new ChipButton(makeButtonStyle("blaster.png"), character, blasterGenerator, 30);
+        final TextButton swordButton = new ChipButton(makeButtonStyle("widesword.png"), character, swordGenerator, 80);
 
         blasterButton.setPosition(100, 500);
         swordButton.setPosition(100, 390);
 
-        swordButton.setWidth(100);
-        swordButton.setHeight(100);
+        Stage stage = new MainStage(handlers, viewport);
 
-        stage = new MainStage(handler, viewport);
         stage.addActor(blasterButton);
         stage.addActor(swordButton);
+
+        return stage;
     }
 
     public void render() {
@@ -127,20 +133,9 @@ public class SquaresGame extends Game {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         engine.update(Gdx.graphics.getDeltaTime());
+
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-    }
-
-    private TextButtonStyle makeButtonStyle(String chipPath) {
-        TextButtonStyle textButtonStyle = new TextButtonStyle();
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Roboto-Medium.ttf"));
-        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        parameter.size = 12;
-        BitmapFont font12 = generator.generateFont(parameter);
-        generator.dispose();
-        textButtonStyle.font = font12;
-        textButtonStyle.up = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(chipPath))));
-        return textButtonStyle;
     }
 
 

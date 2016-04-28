@@ -3,6 +3,8 @@ package squares.character;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import squares.components.Enums;
+import squares.components.Enums.TravelDirection;
+import squares.components.PlayerComponent;
 
 /**
  * The interface for a character entity. Used by the AI and the movable player to
@@ -10,7 +12,15 @@ import squares.components.Enums;
  */
 public interface CharacterEntity {
 
-    public boolean Move(Enums.UnitMovement direction, Array<Array<Entity>> currentGrid);
+    boolean Move(Enums.UnitMovement direction, Array<Array<Entity>> currentGrid);
 
-    public void castSpell();
+    void castSpell(TravelDirection direction);
+
+    Entity getEntity();
+
+    Enums.TileTypes occupyType();
+
+    PlayerComponent getPlayerComponent();
+
+    Array<Enums.TileTypes> getAllergies();
 }

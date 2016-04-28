@@ -5,9 +5,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Array;
+import com.uwsoft.editor.renderer.components.TransformComponent;
 import squares.components.Enums;
 import squares.components.TileComponent;
-import squares.components.TransformComponent;
 import squares.components.spells.Spell;
 
 /**
@@ -25,13 +25,13 @@ public class WeaponSystem extends IteratingSystem {
         this.gridField = gridField;
     }
 
-    private void process(Entity entity, TransformComponent transformComponent, Spell spellRep, float delta) {
+    private void process(TransformComponent transformComponent, Spell spellRep, float delta) {
         switch (spellRep.occupyEffect) {
             case SwordOccupied:
                 if (spellRep.isActive) handleSwordType(spellRep, transformComponent, delta);
                 break;
             case BlasterOccupied:
-                if(spellRep.isActive) handleBlasterType(spellRep, transformComponent);
+                if (spellRep.isActive) handleBlasterType(spellRep, transformComponent);
                 break;
             default:
                 System.out.println("Not applicable!");
@@ -40,20 +40,22 @@ public class WeaponSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float delta) {
-        process(entity, transformM.get(entity), spellM.get(entity), delta);
+        process(transformM.get(entity), spellM.get(entity), delta);
     }
 
     private void handleSwordType(Spell spellRep, TransformComponent transformComponent, float delta) {
         spellRep.iterate(delta);
 
-        float leftSwipeY = transformComponent.y() + 1;
-        float leftSwipeX = transformComponent.x() + 1;
+        int inc = spellRep.direction.increment;
 
-        float rightSwipeY = transformComponent.y() - 1;
-        float rightSwipeX = transformComponent.x() + 1;
+        float leftSwipeY = transformComponent.y + inc;
+        float leftSwipeX = transformComponent.x + inc;
 
-        float playerFrontY = transformComponent.y();
-        float playerFrontX = transformComponent.x() + 1;
+        float rightSwipeY = transformComponent.y - inc;
+        float rightSwipeX = transformComponent.x + inc;
+
+        float playerFrontY = transformComponent.y;
+        float playerFrontX = transformComponent.x + inc;
 
         if (spellRep.isActive) {
             fillSwordFields(leftSwipeX, leftSwipeY);
@@ -69,21 +71,32 @@ public class WeaponSystem extends IteratingSystem {
 
     private void handleBlasterType(Spell spellRep, TransformComponent transformComponent) {
 
-        float nextXPosit = transformComponent.x() + 1;
-        TileComponent prevTileComp = tileM.get(gridField.get((int) transformComponent.y()).get((int) transformComponent.x()));
+        float nextXPosit = transformComponent.x + spellRep.direction.increment;
+        TileComponent prevTileComp = tileM.get(gridField.get((int) transformComponent.y).get((int) transformComponent.x));
 
         if (prevTileComp.getCurrentType() == Enums.TileTypes.BlasterOccupied) {
             prevTileComp.setCurrentType(prevTileComp.getDefaultType());
         }
 
         if (!(nextXPosit > 9 || nextXPosit < 0)) {
-            transformComponent.setPosition(transformComponent.x() + 1, transformComponent.y());
+            transformComponent.x = nextXPosit;
 
-            Entity targetTile = gridField.get((int) transformComponent.y()).get((int) transformComponent.x());
+            Entity targetTile = gridField.get((int) transformComponent.y).get((int) transformComponent.x);
 
-            tileM.get(targetTile).setCurrentType(Enums.TileTypes.BlasterOccupied);
+            TileComponent tileComp = tileM.get(targetTile);
+            if(!tileComp.isOccupied()){
+                tileComp.setCurrentType(Enums.TileTypes.BlasterOccupied);
+            } else {
+                tileComp.occupier.health -= spellRep.damage;
+                System.out.println("Enemy health is now " + tileComp.occupier.health);
+                System.out.println("Collision!");
+                transformComponent.x = 0;
+                transformComponent.y = 0;
+                spellRep.isActive = false;
+            }
         } else {
-            transformComponent.setPosition(0, 0);
+            transformComponent.x = 0;
+            transformComponent.y = 0;
             spellRep.isActive = false;
         }
     }

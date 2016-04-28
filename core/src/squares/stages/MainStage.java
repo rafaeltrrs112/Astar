@@ -2,22 +2,27 @@ package squares.stages;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import jdk.internal.util.xml.impl.Input;
+import squares.touch.CharacterHandler;
+import squares.touch.EnemyHandler;
 
 /**
  */
 public class MainStage extends Stage {
-    private InputProcessor userInputHandler;
+    private Array<CharacterHandler> handlers;
 
-    public MainStage(InputProcessor userInputHandler, Viewport viewPort){
+    public MainStage(Array<CharacterHandler> handlers, Viewport viewPort) {
         super(viewPort);
-        this.userInputHandler = userInputHandler;
+        this.handlers = handlers;
     }
 
-    public boolean keyDown(int keyCode) {
-        boolean res = super.keyDown(keyCode);
-        userInputHandler.keyDown(keyCode);
-        return res;
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        for (CharacterHandler handler : handlers) {
+            handler.handle(delta);
+        }
     }
+
 }

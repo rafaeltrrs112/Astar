@@ -8,10 +8,13 @@ import com.badlogic.gdx.utils.Queue;
 import squares.components.Enums.TileTypes;
 
 public class PlayerComponent implements Component {
-    public Array<TileTypes> allergies = Array.with(TileTypes.BluePlayerTile);
+    public Array<TileTypes> allergies = Array.with();
     public Queue<Entity> spells = new Queue<Entity>();
+    public int health = 250;
 
     public boolean allergic(TileTypes type) {
         return !allergies.contains(type, true);
     }
+
+    public TileTypes occupyType;
 }

@@ -9,6 +9,7 @@ import squares.components.Enums.TileTypes;
 public class TileComponent implements Component {
     private TileTypes defaultType;
     private TileTypes currentType;
+    public PlayerComponent occupier;
 
     public void setDefaultType(TileTypes defaultType) {
         this.defaultType = defaultType;
@@ -30,4 +31,7 @@ public class TileComponent implements Component {
         this.currentType = currentType;
     }
 
+    public boolean isOccupied(){
+        return occupier != null;
+    }
 }

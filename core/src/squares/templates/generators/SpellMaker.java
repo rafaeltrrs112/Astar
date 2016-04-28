@@ -1,9 +1,9 @@
-package squares.generators;
+package squares.templates.generators;
 
 import com.badlogic.ashley.core.Entity;
 
 /**
  */
 public interface SpellMaker {
-    Entity makeSpell();
+    Entity makeSpell(int damage);
 }
