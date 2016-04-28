@@ -14,7 +14,7 @@ import squares.components.spells.Spell;
 /**
  * Main player character object wrapper.
  */
-public class PCPlayerCharacter {
+public class PCPlayerCharacter implements CharacterEntity {
     private final PlayerComponent playerComponent;
     private final TransformComponent transformComponent;
 

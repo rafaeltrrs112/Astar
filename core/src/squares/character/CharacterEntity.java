@@ -10,23 +10,7 @@ import squares.components.Enums;
  */
 public interface CharacterEntity {
 
-    /**
-     * The only information passed to a player character are all the entities on the grid. A manager
-     * will be needed to inform this character of the state of each tile entity on the grid for decision making.
-     *
-     * @param currentGridState The entities that represent tiles on the grid.
-     */
-    boolean actOnGrid(Array<Array<Entity>> currentGridState);
+    public boolean Move(Enums.UnitMovement direction, Array<Array<Entity>> currentGrid);
 
-    boolean tryVertical(Array<Array<Entity>> currentGrid, int increment);
-
-    boolean tryHorizontal(Array<Array<Entity>> currentGrid, int increment);
-
-    boolean canStep(Entity potentialTile);
-
-    Enums.TileTypes occupyType();
-
-    Entity getEntity();
-
-
+    public void castSpell();
 }

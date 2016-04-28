@@ -1,17 +1,14 @@
 package squares.systems.touch;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Array;
-import squares.character.CharacterEntity;
 import squares.character.PCPlayerCharacter;
 import squares.components.Enums;
 import squares.components.TileComponent;
 import squares.components.TransformComponent;
-import squares.components.spells.Spell;
 
 /**
  *
