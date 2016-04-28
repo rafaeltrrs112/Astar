@@ -5,5 +5,5 @@ import com.badlogic.ashley.core.Entity;
 /**
  */
 public interface SpellMaker {
-    public Entity makeSpell();
+    Entity makeSpell();
 }

@@ -9,7 +9,7 @@ import squares.components.Enums;
 public class Spell implements Component {
     public boolean isActive = false;
     public Enums.TileTypes occupyEffect;
-    public float activeTime = 0;
+    private float activeTime = 0;
     public float damage = 0;
     public float coolDown = .5f;
 
