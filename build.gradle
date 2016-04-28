@@ -1,15 +1,11 @@
 buildscript {
-    ext.kotlin_version = '1.0.0'
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.0-beta-4584'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
-apply plugin: 'kotlin'
 
 allprojects {
     apply plugin: "eclipse"
@@ -23,7 +19,6 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
-        kotlinVersion = '1.0.0-beta-4584'
     }
 
     repositories {
@@ -53,7 +48,6 @@ project(":desktop") {
 
 project(":core") {
     apply plugin: "java"
-    apply plugin: "kotlin"
 
 
 
@@ -74,7 +68,6 @@ project(":core") {
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.2"
         compile "de.tomgrill.gdxdialogs:gdx-dialogs-core:1.0.0"
         compile "com.github.czyzby:gdx-kiwi:1.5.1.9.2"
-        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
         compile fileTree(include: ['*.jar'], dir: 'libs')
 
     }
@@ -86,9 +79,4 @@ tasks.eclipse.doLast {
 repositories {
     mavenCentral()
 }
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-}
-sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
-}
+

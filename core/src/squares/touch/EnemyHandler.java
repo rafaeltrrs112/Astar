@@ -33,13 +33,17 @@ public class EnemyHandler extends UserInputHandler {
                 movementDirection = Enums.UnitMovement.North;
             }
 
-            if (playerInLane()){
-                playerCharacter.castSpell(Enums.TravelDirection.LEFT);
-            }
+            shootForward();
 
             playerCharacter.Move(movementDirection, gridField);
 
             setTile();
+        }
+    }
+
+    private void shootForward() {
+        if (playerInLane()) {
+            playerCharacter.castSpell(Enums.TravelDirection.LEFT);
         }
     }
 

@@ -37,11 +37,10 @@ public class Initializer {
                 Entity entity = tileTemplate.makeEntity();
                 TransformComponent transformComponent = entity.getComponent(TransformComponent.class);
 
-
                 transformComponent.x = (i * TILE_SIZE) + ADJUST_X;
                 transformComponent.y = (j * TILE_SIZE) + ADJUST_Y;
 
-                TileTypes defaultType = i <= 4 ? TileTypes.RedPlayerTile : TileTypes.BluePlayerTile;
+                TileTypes defaultType = i <= 4 ? TileTypes.RedTile : TileTypes.BlueTile;
 
                 TileComponent tileComp = entity.getComponent(TileComponent.class);
 

@@ -53,11 +53,12 @@ public class SquaresGame extends Game {
         Entity player = playerTemplate.makeEntity();
         Entity enemy = playerTemplate.makeEntity();
 
-        initPlayer(player, TileTypes.GreenPlayerOccupied, TileTypes.BluePlayerTile, 2, 2);
-        initPlayer(enemy, TileTypes.CoralPlayerOccupied, TileTypes.RedPlayerTile, 8, 2);
+        initPlayer(player, TileTypes.GreenPlayerOccupied, TileTypes.BlueTile, 2, 2);
+        initPlayer(enemy, TileTypes.CoralPlayerOccupied, TileTypes.RedTile, 8, 2);
 
         Entity blaster = blasterGenerator.makeSpell(30);
         Entity sword = swordGenerator.makeSpell(80);
+
         Entity blaster2 = blasterGenerator.makeSpell(100);
         Entity blaster3 = blasterGenerator.makeSpell(100);
         Entity blaster4 = blasterGenerator.makeSpell(100);
@@ -70,6 +71,9 @@ public class SquaresGame extends Game {
         mainPlayer.getPlayerComponent().spells.addLast(blaster);
         mainPlayer.getPlayerComponent().spells.addLast(sword);
 
+        enemyCharacter.getPlayerComponent().spells.addLast(blaster2);
+        enemyCharacter.getPlayerComponent().spells.addLast(blaster3);
+        enemyCharacter.getPlayerComponent().spells.addLast(blaster4);
         enemyCharacter.getPlayerComponent().spells.addLast(blaster2);
         enemyCharacter.getPlayerComponent().spells.addLast(blaster3);
         enemyCharacter.getPlayerComponent().spells.addLast(blaster4);

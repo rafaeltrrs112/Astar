@@ -28,11 +28,11 @@ public class GridRenderSystem extends IteratingSystem {
         /// Do stuff here.
         shapeRenderer.begin(ShapeType.Filled);
         switch (tileComponent.getCurrentType()) {
-            case RedPlayerTile:
+            case RedTile:
                 shapeRenderer.setColor(Color.FIREBRICK);
                 shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
                 break;
-            case BluePlayerTile:
+            case BlueTile:
                 shapeRenderer.setColor(Color.NAVY);
                 shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
                 break;

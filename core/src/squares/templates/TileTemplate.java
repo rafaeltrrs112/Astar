@@ -14,7 +14,7 @@ public class TileTemplate implements Template {
     public Entity makeEntity() {
         Entity tile = new Entity();
         tile.add(new TransformComponent());
-        tile.add(new TileComponent(Enums.TileTypes.RedPlayerTile));
+        tile.add(new TileComponent(Enums.TileTypes.RedTile));
         return tile;
     }
 

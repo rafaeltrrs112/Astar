@@ -5,8 +5,8 @@ package squares.components;
  */
 public class Enums {
     public enum TileTypes {
-        RedPlayerTile,
-        BluePlayerTile,
+        RedTile,
+        BlueTile,
         GreenPlayerOccupied,
         CoralPlayerOccupied,
         BlasterOccupied,
