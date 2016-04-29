@@ -2,10 +2,10 @@ package squares.touch;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
-import com.uwsoft.editor.renderer.components.TransformComponent;
 import squares.character.CharacterEntity;
-import squares.components.Enums;
+import squares.utils.Enums;
 import squares.components.TileComponent;
+import squares.components.spells.Spell;
 
 /**
  * The AI enemy handler.
@@ -33,11 +33,31 @@ public class EnemyHandler extends UserInputHandler {
                 movementDirection = Enums.UnitMovement.North;
             }
 
-            shootForward();
-
             playerCharacter.Move(movementDirection, gridField);
 
             setTile();
+        }
+
+        if (timePassed >= .1f) {
+            if (playerCharacter.getPlayerComponent().spells.size != 0) {
+                if (playerCharacter.getPlayerComponent().spells.first().getComponent(Spell.class).occupyEffect == Enums.TileTypes.BlasterOneOccupied) {
+                    shootForward();
+                }
+
+                if (playerCharacter.getPlayerComponent().spells.first().getComponent(Spell.class).occupyEffect == Enums.TileTypes.SwordOccupied) {
+                    cutForward();
+                }
+            }
+        }
+    }
+
+
+    private void cutForward() {
+//        if(playerInLane()) System.out.println("Is player in lane" + playerInLane());
+        if(playerInSwordRange()) System.out.println("Is player in column" + playerInSwordRange());
+
+        if (playerInLane() && playerInSwordRange()) {
+            playerCharacter.castSpell(Enums.TravelDirection.LEFT);
         }
     }
 
@@ -54,6 +74,14 @@ public class EnemyHandler extends UserInputHandler {
             if (tileComp.isOccupied() && tileComp.occupier.occupyType == Enums.TileTypes.GreenPlayerOccupied) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    private boolean playerInSwordRange() {
+        int forwardColumn = (int) transformComponent.x - 1;
+        for (Array<Entity> entityArray : gridField) {
+            if (tileMapper.get(entityArray.get(forwardColumn)).isOccupied()) return true;
         }
         return false;
     }

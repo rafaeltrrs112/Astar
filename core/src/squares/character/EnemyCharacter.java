@@ -1,7 +1,7 @@
 package squares.character;
 
 import com.badlogic.ashley.core.Entity;
-import squares.components.Enums;
+import squares.utils.Enums;
 
 /**
  * Enemy character that implements the movable character interface.

@@ -9,11 +9,10 @@ import static squares.utils.Initializer.spellTempalte;
 
 /**
  */
-public class SwordGenerator implements SpellMaker {
+public class ShortsSwordGenerator implements SpellMaker {
+    private Engine engine;
 
-    private final Engine engine;
-
-    public SwordGenerator(Engine engine) {
+    public ShortsSwordGenerator(Engine engine){
         this.engine = engine;
     }
 
@@ -22,7 +21,7 @@ public class SwordGenerator implements SpellMaker {
         Entity sword = spellTempalte.makeEntity();
 
         Spell spellRep = sword.getComponent(Spell.class);
-        spellRep.occupyEffect = Enums.TileTypes.SwordOccupied;
+        spellRep.occupyEffect = Enums.TileTypes.ShortSwordOccupied;
         spellRep.damage = damage;
 
         engine.addEntity(sword);

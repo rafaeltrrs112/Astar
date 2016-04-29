@@ -7,7 +7,6 @@ import squares.components.PlayerComponent;
 /**
  */
 public class PlayerTemplate implements Template {
-
     @Override
     public Entity makeEntity() {
         Entity entity = new Entity();

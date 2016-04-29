@@ -4,9 +4,9 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import com.uwsoft.editor.renderer.components.TransformComponent;
-import squares.components.Enums;
-import squares.components.Enums.TravelDirection;
-import squares.components.Enums.UnitMovement;
+import squares.utils.Enums;
+import squares.utils.Enums.TravelDirection;
+import squares.utils.Enums.UnitMovement;
 import squares.components.PlayerComponent;
 import squares.components.TileComponent;
 import squares.components.spells.Spell;
@@ -31,6 +31,8 @@ public class PCPlayerCharacter implements CharacterEntity {
         this.transformComponent = entity.getComponent(TransformComponent.class);
         this.playerComponent = entity.getComponent(PlayerComponent.class);
         this.occupyType = occupyType;
+
+        initAllergies();
     }
 
     @Override
@@ -101,10 +103,16 @@ public class PCPlayerCharacter implements CharacterEntity {
             Entity spellEnt = playerComponent.spells.removeFirst();
             Spell nextSpell = spellM.get(spellEnt);
             TransformComponent spellTransform = transformMapper.get(spellEnt);
-            spellTransform.x = transformComponent.x; spellTransform.y = transformComponent.y;
+            spellTransform.x = transformComponent.x;
+            spellTransform.y = transformComponent.y;
             nextSpell.isActive = true;
             nextSpell.direction = direction;
         }
+    }
+
+    private void initAllergies() {
+        playerComponent.allergies.addAll(Enums.TileTypes.VioletPlayerOccupied);
+        playerComponent.allergies.addAll(Enums.TileTypes.CoralPlayerOccupied);
     }
 
 }

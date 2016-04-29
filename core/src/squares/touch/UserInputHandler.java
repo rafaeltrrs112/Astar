@@ -7,7 +7,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.Array;
 import com.uwsoft.editor.renderer.components.TransformComponent;
 import squares.character.CharacterEntity;
-import squares.components.Enums;
+import squares.utils.Enums;
 import squares.components.TileComponent;
 
 /**

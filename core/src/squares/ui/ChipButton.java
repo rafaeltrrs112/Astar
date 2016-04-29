@@ -1,10 +1,9 @@
-package squares.spells;
+package squares.ui;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import squares.character.CharacterEntity;
-import squares.character.PCPlayerCharacter;
 import squares.templates.generators.SpellMaker;
 
 /**
@@ -12,8 +11,8 @@ import squares.templates.generators.SpellMaker;
  */
 public class ChipButton extends TextButton {
 
-    public ChipButton(TextButtonStyle style, final CharacterEntity character, final SpellMaker generator, final int chipDamage) {
-        super("", style);
+    public ChipButton(String text, TextButtonStyle style, final CharacterEntity character, final SpellMaker generator, final int chipDamage) {
+        super(text, style);
 
         addListener(new ClickListener() {
             @Override
@@ -24,5 +23,9 @@ public class ChipButton extends TextButton {
 
         setWidth(100);
         setHeight(100);
+    }
+
+    public ChipButton(TextButtonStyle style, final CharacterEntity character, final SpellMaker generator, final int chipDamage) {
+        this("", style, character, generator, chipDamage);
     }
 }

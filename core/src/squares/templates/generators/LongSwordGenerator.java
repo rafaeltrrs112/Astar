@@ -8,12 +8,12 @@ import squares.components.spells.Spell;
 import static squares.utils.Initializer.spellTempalte;
 
 /**
+ * The long sword generator.
  */
-public class SwordGenerator implements SpellMaker {
+public class LongSwordGenerator implements SpellMaker {
+    private Engine engine;
 
-    private final Engine engine;
-
-    public SwordGenerator(Engine engine) {
+    public LongSwordGenerator(Engine engine) {
         this.engine = engine;
     }
 
@@ -22,7 +22,7 @@ public class SwordGenerator implements SpellMaker {
         Entity sword = spellTempalte.makeEntity();
 
         Spell spellRep = sword.getComponent(Spell.class);
-        spellRep.occupyEffect = Enums.TileTypes.SwordOccupied;
+        spellRep.occupyEffect = Enums.TileTypes.LongSwordOccupied;
         spellRep.damage = damage;
 
         engine.addEntity(sword);

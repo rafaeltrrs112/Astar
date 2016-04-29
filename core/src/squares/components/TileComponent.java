@@ -1,7 +1,7 @@
 package squares.components;
 
 import com.badlogic.ashley.core.Component;
-import squares.components.Enums.TileTypes;
+import squares.utils.Enums.TileTypes;
 
 /**
  * A tile component representation.

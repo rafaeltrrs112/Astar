@@ -1,4 +1,4 @@
-package squares.components;
+package squares.utils;
 
 /**
  * Container constants class for the enums.
@@ -9,8 +9,13 @@ public class Enums {
         BlueTile,
         GreenPlayerOccupied,
         CoralPlayerOccupied,
-        BlasterOccupied,
-        SwordOccupied
+        BlasterOneOccupied,
+        SwordOccupied,
+        VioletPlayerOccupied,
+        LongSwordOccupied,
+        ShortSwordOccupied,
+        BlasterTwoOccupied,
+        BlasterThreeOccupied
     }
 
     public enum UnitMovement {
@@ -26,12 +31,17 @@ public class Enums {
 
         public final int increment;
 
-        TravelDirection(int increment){
+        TravelDirection(int increment) {
             this.increment = increment;
         }
 
-        public int getIncrement(){
+        public int getIncrement() {
             return increment;
         }
+    }
+
+    public enum State {
+        ROUND,
+        REQUEUE
     }
 }

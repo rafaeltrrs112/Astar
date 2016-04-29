@@ -2,8 +2,8 @@ package squares.character;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
-import squares.components.Enums;
-import squares.components.Enums.TravelDirection;
+import squares.utils.Enums;
+import squares.utils.Enums.TravelDirection;
 import squares.components.PlayerComponent;
 
 /**

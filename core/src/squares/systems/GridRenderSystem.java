@@ -40,7 +40,11 @@ public class GridRenderSystem extends IteratingSystem {
                 shapeRenderer.setColor(Color.FOREST);
                 shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
                 break;
-            case BlasterOccupied:
+            case VioletPlayerOccupied:
+                shapeRenderer.setColor(Color.VIOLET);
+                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                break;
+            case BlasterOneOccupied:
                 shapeRenderer.setColor(Color.YELLOW);
                 shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
                 break;
@@ -50,6 +54,22 @@ public class GridRenderSystem extends IteratingSystem {
                 break;
             case CoralPlayerOccupied:
                 shapeRenderer.setColor(Color.CORAL);
+                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                break;
+            case ShortSwordOccupied:
+                shapeRenderer.setColor(Color.PURPLE);
+                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                break;
+            case BlasterTwoOccupied:
+                shapeRenderer.setColor(Color.TEAL);
+                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                break;
+            case BlasterThreeOccupied:
+                shapeRenderer.setColor(Color.BLACK);
+                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                break;
+            case LongSwordOccupied:
+                shapeRenderer.setColor(Color.SLATE);
                 shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
                 break;
             default:

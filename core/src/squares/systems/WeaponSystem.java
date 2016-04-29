@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Array;
 import com.uwsoft.editor.renderer.components.TransformComponent;
-import squares.components.Enums;
+import squares.utils.Enums;
 import squares.components.TileComponent;
 import squares.components.spells.Spell;
 
@@ -30,13 +30,84 @@ public class WeaponSystem extends IteratingSystem {
             case SwordOccupied:
                 if (spellRep.isActive) handleSwordType(spellRep, transformComponent, delta);
                 break;
-            case BlasterOccupied:
+            case BlasterThreeOccupied:
+            case BlasterTwoOccupied:
+            case BlasterOneOccupied:
                 if (spellRep.isActive) handleBlasterType(spellRep, transformComponent);
+                break;
+            case ShortSwordOccupied:
+                if (spellRep.isActive) handleSwordTypeShort(spellRep, transformComponent, delta);
+                break;
+            case LongSwordOccupied:
+                if (spellRep.isActive) handleSwordTypeLong(spellRep, transformComponent, delta);
                 break;
             default:
                 System.out.println("Not applicable!");
         }
     }
+
+    private void handleSwordTypeLong(Spell spellRep, TransformComponent transformComponent, float delta) {
+        System.out.println("Long sword");
+        spellRep.iterate(delta);
+
+        int inc = spellRep.direction.increment;
+
+        float playerFrontY = transformComponent.y;
+        float pointFront = transformComponent.x + inc;
+
+        float pointFurtherTwo = transformComponent.x + 2 * inc;
+
+        float pointFurtherThree = transformComponent.x + 3 * inc;
+
+        boolean forwardHit = false;
+        boolean furtherHitTwo = false;
+        boolean furthestHitThree = false;
+
+        if (spellRep.isActive) {
+
+            forwardHit = fillDamageCheck(spellRep, pointFront, playerFrontY);
+            furtherHitTwo = fillDamageCheck(spellRep, pointFurtherTwo, playerFrontY);
+            furthestHitThree = fillDamageCheck(spellRep, pointFurtherThree, playerFrontY);
+        }
+
+        if (!spellRep.isActive) {
+
+            if (!forwardHit) resetSwordFields(pointFront, playerFrontY);
+            if (!furtherHitTwo) resetSwordFields(pointFurtherTwo, playerFrontY);
+            if (!furthestHitThree) resetSwordFields(pointFurtherThree, playerFrontY);
+
+        }
+
+        if (forwardHit || furtherHitTwo || furthestHitThree) {
+            spellRep.damage = 0;
+        }
+    }
+
+    private void handleSwordTypeShort(Spell spellRep, TransformComponent transformComponent, float delta) {
+        spellRep.iterate(delta);
+
+        int inc = spellRep.direction.increment;
+
+        float playerFrontY = transformComponent.y;
+        float playerFrontX = transformComponent.x + inc;
+
+        boolean centerHit = false;
+
+        if (spellRep.isActive) {
+
+            centerHit = fillDamageCheck(spellRep, playerFrontX, playerFrontY);
+        }
+
+        if (!spellRep.isActive) {
+
+            if (!centerHit) resetSwordFields(playerFrontX, playerFrontY);
+        }
+
+        if (centerHit) {
+            spellRep.damage = 0;
+        }
+    }
+
 
     @Override
     protected void processEntity(Entity entity, float delta) {
@@ -57,14 +128,24 @@ public class WeaponSystem extends IteratingSystem {
         float playerFrontY = transformComponent.y;
         float playerFrontX = transformComponent.x + inc;
 
+        boolean leftHit = false;
+        boolean centerHit = false;
+        boolean rightHit = false;
+
         if (spellRep.isActive) {
-            fillSwordFields(leftSwipeX, leftSwipeY);
-            fillSwordFields(rightSwipeX, rightSwipeY);
-            fillSwordFields(playerFrontX, playerFrontY);
-        } else {
-            resetSwordFields(leftSwipeX, leftSwipeY);
-            resetSwordFields(rightSwipeX, rightSwipeY);
-            resetSwordFields(playerFrontX, playerFrontY);
+            leftHit = fillDamageCheck(spellRep, leftSwipeX, leftSwipeY);
+            rightHit = fillDamageCheck(spellRep, rightSwipeX, rightSwipeY);
+            centerHit = fillDamageCheck(spellRep, playerFrontX, playerFrontY);
+        }
+
+        if (!spellRep.isActive) {
+            if (!leftHit) resetSwordFields(leftSwipeX, leftSwipeY);
+            if (!rightHit) resetSwordFields(rightSwipeX, rightSwipeY);
+            if (!centerHit) resetSwordFields(playerFrontX, playerFrontY);
+        }
+
+        if (leftHit || rightHit || centerHit) {
+            spellRep.damage = 0;
         }
 
     }
@@ -74,7 +155,7 @@ public class WeaponSystem extends IteratingSystem {
         float nextXPosit = transformComponent.x + spellRep.direction.increment;
         TileComponent prevTileComp = tileM.get(gridField.get((int) transformComponent.y).get((int) transformComponent.x));
 
-        if (prevTileComp.getCurrentType() == Enums.TileTypes.BlasterOccupied) {
+        if (prevTileComp.getCurrentType() == spellRep.occupyEffect) {
             prevTileComp.setCurrentType(prevTileComp.getDefaultType());
         }
 
@@ -84,8 +165,8 @@ public class WeaponSystem extends IteratingSystem {
             Entity targetTile = gridField.get((int) transformComponent.y).get((int) transformComponent.x);
 
             TileComponent tileComp = tileM.get(targetTile);
-            if(!tileComp.isOccupied()){
-                tileComp.setCurrentType(Enums.TileTypes.BlasterOccupied);
+            if (!tileComp.isOccupied()) {
+                tileComp.setCurrentType(spellRep.occupyEffect);
             } else {
                 tileComp.occupier.health -= spellRep.damage;
                 System.out.println("Enemy health is now " + tileComp.occupier.health);
@@ -101,12 +182,21 @@ public class WeaponSystem extends IteratingSystem {
         }
     }
 
-    private void fillSwordFields(float x, float y) {
+    private boolean fillDamageCheck(Spell spellRep, float x, float y) {
         try {
             Entity targetTile = gridField.get((int) y).get((int) x);
-            tileM.get(targetTile).setCurrentType(Enums.TileTypes.SwordOccupied);
+            TileComponent tileComp = tileM.get(targetTile);
+            if (tileComp.isOccupied() && spellRep.isActive) {
+                tileComp.occupier.health -= spellRep.damage;
+                System.out.println("Collision! player health is now " + tileComp.occupier.health);
+                return true;
+            } else {
+                tileComp.setCurrentType(spellRep.occupyEffect);
+                return false;
+            }
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Index out of bounds at sword creation.");
+            return false;
         }
     }
 
@@ -114,7 +204,7 @@ public class WeaponSystem extends IteratingSystem {
         try {
             Entity targetTile = gridField.get((int) y).get((int) x);
             TileComponent tileComp = tileM.get(targetTile);
-            tileComp.setCurrentType(tileComp.getDefaultType());
+            if (!tileComp.isOccupied()) tileComp.setCurrentType(tileComp.getDefaultType());
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Index out of bounds at sword creation.");
         }

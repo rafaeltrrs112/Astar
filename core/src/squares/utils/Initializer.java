@@ -2,6 +2,7 @@ package squares.utils;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,7 +14,7 @@ import com.uwsoft.editor.renderer.components.TransformComponent;
 import squares.components.TileComponent;
 import squares.templates.*;
 
-import static squares.components.Enums.TileTypes;
+import static squares.utils.Enums.TileTypes;
 
 /**
  * Initializer utility methods.
@@ -60,7 +61,7 @@ public class Initializer {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Roboto-Medium.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
-        parameter.size = 12;
+        parameter.size = 24;
 
         BitmapFont font12 = generator.generateFont(parameter);
 
@@ -68,7 +69,8 @@ public class Initializer {
 
         textButtonStyle.font = font12;
         textButtonStyle.up = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(chipPath))));
-
+        textButtonStyle.fontColor = Color.WHITE;
         return textButtonStyle;
     }
+
 }
