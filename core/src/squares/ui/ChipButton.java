@@ -11,21 +11,32 @@ import squares.templates.generators.SpellMaker;
  */
 public class ChipButton extends TextButton {
 
-    public ChipButton(String text, TextButtonStyle style, final CharacterEntity character, final SpellMaker generator, final int chipDamage) {
-        super(text, style);
+    private final ClickListener clickEvent;
+    private final int chipDamage;
+    private final CharacterEntity characterEntity;
+    private final SpellMaker generator;
 
-        addListener(new ClickListener() {
+    public ChipButton(TextButtonStyle style, final CharacterEntity character, final SpellMaker generator, final int chipDamage) {
+        super("", style);
+        this.chipDamage = chipDamage;
+        this.characterEntity = character;
+        this.generator = generator;
+
+        clickEvent = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                character.getPlayerComponent().spells.addFirst(generator.makeSpell(chipDamage));
+                apply();
             }
-        });
+        };
+
+        addListener(clickEvent);
 
         setWidth(100);
         setHeight(100);
     }
 
-    public ChipButton(TextButtonStyle style, final CharacterEntity character, final SpellMaker generator, final int chipDamage) {
-        this("", style, character, generator, chipDamage);
+    public void apply(){
+        if(chipDamage != 0) characterEntity.getPlayerComponent().queueSpell(generator.makeSpell(chipDamage));
     }
+
 }

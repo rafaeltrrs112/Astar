@@ -23,4 +23,5 @@ public interface CharacterEntity {
     PlayerComponent getPlayerComponent();
 
     Array<Enums.TileTypes> getAllergies();
+
 }

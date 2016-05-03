@@ -10,6 +10,7 @@ public class EnemyCharacter extends PCPlayerCharacter {
 
     public EnemyCharacter(Entity entity, Enums.TileTypes occupyType) {
         super(entity, occupyType);
+        getPlayerComponent().spellCap = 200;
     }
 
 }

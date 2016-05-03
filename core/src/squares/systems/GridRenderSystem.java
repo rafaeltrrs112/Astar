@@ -4,7 +4,11 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.uwsoft.editor.renderer.components.TransformComponent;
@@ -18,64 +22,68 @@ public class GridRenderSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
     private ComponentMapper<TileComponent> tileMapper = ComponentMapper.getFor(TileComponent.class);
 
-    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private final ShapeRenderer shapeRenderer;
+    private final SpriteBatch spriteBatch;
+    private final BitmapFont bitmapFont;
 
-    public GridRenderSystem() {
+    public GridRenderSystem(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer, BitmapFont bitmapFont) {
         super(Family.all(TransformComponent.class, TileComponent.class).get());
+        this.shapeRenderer = shapeRenderer;
+        this.bitmapFont = bitmapFont;
+        this.spriteBatch = spriteBatch;
     }
 
     private void processEntityComponents(TransformComponent transformComponent, TileComponent tileComponent) {
-        /// Do stuff here.
-        shapeRenderer.begin(ShapeType.Filled);
+        /// behave stuff here.
+        Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
+
         switch (tileComponent.getCurrentType()) {
             case RedTile:
-                shapeRenderer.setColor(Color.FIREBRICK);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                Color firebrick = Color.FIREBRICK;
+                firebrick.a = 0.5f;
+                drawRect(firebrick, transformComponent);
                 break;
             case BlueTile:
-                shapeRenderer.setColor(Color.NAVY);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                Color navy = Color.TEAL;
+                navy.a = 0.5f;
+                drawRect(navy, transformComponent);
                 break;
             case GreenPlayerOccupied:
-                shapeRenderer.setColor(Color.FOREST);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                Color forest = Color.FOREST;
+                forest.a = (((float) tileComponent.occupier.key.health) / 250f);
+                drawRect(forest, transformComponent);
+                drawHealth(tileComponent, transformComponent);
                 break;
             case VioletPlayerOccupied:
-                shapeRenderer.setColor(Color.VIOLET);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
-                break;
-            case BlasterOneOccupied:
-                shapeRenderer.setColor(Color.YELLOW);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
-                break;
-            case SwordOccupied:
-                shapeRenderer.setColor(Color.LIGHT_GRAY);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                drawRect(Color.VIOLET, transformComponent);
+                drawHealth(tileComponent, transformComponent);
                 break;
             case CoralPlayerOccupied:
-                shapeRenderer.setColor(Color.CORAL);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
-                break;
-            case ShortSwordOccupied:
-                shapeRenderer.setColor(Color.PURPLE);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
-                break;
-            case BlasterTwoOccupied:
-                shapeRenderer.setColor(Color.TEAL);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
-                break;
-            case BlasterThreeOccupied:
-                shapeRenderer.setColor(Color.BLACK);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+                drawRect(Color.CORAL, transformComponent);
+                drawHealth(tileComponent, transformComponent);
                 break;
             case LongSwordOccupied:
-                shapeRenderer.setColor(Color.SLATE);
-                shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
+            case ShortSwordOccupied:
+            case WideSwordOccupied:
+            case BlasterOneOccupied:
+            case BlasterTwoOccupied:
+            case BlasterThreeOccupied:
+            case BombOneOccupied:
+            case BombTwoOccupied:
+            case GrappleOccupied:
+            case BoomerangOccupied:
+                drawRect(tileComponent.getCurrentType().getColor(), transformComponent);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid tile type");
         }
 
+    }
+
+    private void drawRect(Color color, TransformComponent transformComponent) {
+        shapeRenderer.begin(ShapeType.Filled);
+        shapeRenderer.setColor(color);
+        shapeRenderer.rect(transformComponent.x, transformComponent.y, Initializer.TILE_SIZE - 5, Initializer.TILE_SIZE - 5);
         shapeRenderer.end();
     }
 
@@ -84,6 +92,15 @@ public class GridRenderSystem extends IteratingSystem {
         final TransformComponent transformComponent = transformMapper.get(entity);
         final TileComponent tileComponent = tileMapper.get(entity);
         processEntityComponents(transformComponent, tileComponent);
+    }
+
+    private void drawHealth(TileComponent tileComponent, TransformComponent transformComponent) {
+        if (tileComponent.isOccupied()) {
+            spriteBatch.begin();
+            bitmapFont.setColor(Color.DARK_GRAY);
+            bitmapFont.draw(spriteBatch, tileComponent.occupier.key.health + "", transformComponent.x + 35f, transformComponent.y + 75f);
+            spriteBatch.end();
+        }
     }
 
 }

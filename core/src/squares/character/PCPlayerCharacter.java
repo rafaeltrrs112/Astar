@@ -11,6 +11,8 @@ import squares.components.PlayerComponent;
 import squares.components.TileComponent;
 import squares.components.spells.Spell;
 
+import java.awt.*;
+
 /**
  * Main player character object wrapper.
  */
@@ -24,31 +26,48 @@ public class PCPlayerCharacter implements CharacterEntity {
     private final ComponentMapper<TransformComponent> transformMapper = ComponentMapper.getFor(TransformComponent.class);
     private final ComponentMapper<Spell> spellM = ComponentMapper.getFor(Spell.class);
 
-    private static final String INVALID_MSG_STRING = "Invalid direction";
+    private static final String INVALID_MSG_STRING = "Invalid DIRECTION";
 
     public PCPlayerCharacter(Entity entity, Enums.TileTypes occupyType) {
         this.playerEntity = entity;
         this.transformComponent = entity.getComponent(TransformComponent.class);
         this.playerComponent = entity.getComponent(PlayerComponent.class);
         this.occupyType = occupyType;
+        playerComponent.spellCap = 5;
 
         initAllergies();
     }
 
     @Override
     public boolean Move(UnitMovement direction, Array<Array<Entity>> currentGrid) {
+        boolean willMove = false;
+        Point previous = new Point((int) transformComponent.x, (int) transformComponent.y);
+
         switch (direction) {
             case North:
-                return transformComponent.y < 4 && tryVertical(currentGrid, 1);
+                willMove = transformComponent.y < 4 && tryVertical(currentGrid, 1);
+                break;
             case South:
-                return transformComponent.y > 0 && tryVertical(currentGrid, -1);
+                willMove = transformComponent.y > 0 && tryVertical(currentGrid, -1);
+                break;
             case East:
-                return transformComponent.x < 9 && tryHorizontal(currentGrid, 1);
+                willMove = transformComponent.x < 9 && tryHorizontal(currentGrid, 1);
+                break;
             case West:
-                return transformComponent.x > 0 && tryHorizontal(currentGrid, -1);
+                willMove = transformComponent.x > 0 && tryHorizontal(currentGrid, -1);
+                break;
+            case Stay:
+                break;
             default:
                 throw new IllegalArgumentException(INVALID_MSG_STRING);
         }
+
+        if (willMove) {
+            TileComponent t = currentGrid.get(previous.y).get(previous.x).getComponent(TileComponent.class);
+            t.occupier = null;
+        }
+
+        return willMove;
     }
 
     @Override
@@ -62,23 +81,34 @@ public class PCPlayerCharacter implements CharacterEntity {
     }
 
     private boolean tryVertical(Array<Array<Entity>> currentGrid, int increment) {
-        float nextPosit = transformComponent.y + increment;
-        Entity potentialTile = currentGrid.get((int) nextPosit).get((int) transformComponent.x);
+        float nextYPosit = transformComponent.y + increment;
+
+        Entity potentialTile = currentGrid.get((int) nextYPosit).get((int) transformComponent.x);
         boolean canMove = canStep(potentialTile);
         if (canMove) {
-            transformComponent.y = nextPosit;
-            potentialTile.getComponent(TileComponent.class).occupier = playerComponent;
+            transformComponent.y = nextYPosit;
+            if (!willCollide(transformComponent.x, nextYPosit, currentGrid))
+                potentialTile.getComponent(TileComponent.class).setOccupier(playerComponent, transformComponent);
         }
-        return canMove;
+        return canMove && !willCollide(transformComponent.x, nextYPosit, currentGrid);
     }
 
     private boolean tryHorizontal(Array<Array<Entity>> currentGrid, int increment) {
-        float nextPosit = transformComponent.x + increment;
-
-        Entity potentialTile = currentGrid.get((int) transformComponent.y).get((int) nextPosit);
+        float nextXPosit = transformComponent.x + increment;
+        Entity potentialTile = currentGrid.get((int) transformComponent.y).get((int) nextXPosit);
         boolean canMove = canStep(potentialTile);
-        if (canMove) transformComponent.x = nextPosit;
-        return canMove;
+        if (canMove) {
+            transformComponent.x = nextXPosit;
+            if (!willCollide(nextXPosit, transformComponent.y, currentGrid))
+                potentialTile.getComponent(TileComponent.class).setOccupier(playerComponent, transformComponent);
+        }
+        return canMove && !willCollide(nextXPosit, transformComponent.y, currentGrid);
+    }
+
+    private boolean willCollide(float x, float y, Array<Array<Entity>> gridField) {
+        Entity targetTile = gridField.get((int) y).get((int) x);
+        TileComponent targetTileComponent = targetTile.getComponent(TileComponent.class);
+        return targetTileComponent.isOccupied();
     }
 
     private boolean canStep(Entity potentialTile) {
@@ -99,14 +129,16 @@ public class PCPlayerCharacter implements CharacterEntity {
 
     @Override
     public void castSpell(TravelDirection direction) {
-        if (playerComponent.spells.size != 0) {
-            Entity spellEnt = playerComponent.spells.removeFirst();
+        if (playerComponent.hasSpells()) {
+            Entity spellEnt = playerComponent.popSpell();
             Spell nextSpell = spellM.get(spellEnt);
             TransformComponent spellTransform = transformMapper.get(spellEnt);
             spellTransform.x = transformComponent.x;
             spellTransform.y = transformComponent.y;
             nextSpell.isActive = true;
-            nextSpell.direction = direction;
+            nextSpell.setOriginalDirection(direction);
+            nextSpell.setDirection(direction);
+
         }
     }
 

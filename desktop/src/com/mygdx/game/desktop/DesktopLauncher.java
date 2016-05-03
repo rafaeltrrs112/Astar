@@ -14,7 +14,6 @@ public class DesktopLauncher {
 
         appConfig.height = 1080;
         appConfig.width = 1920;
-        appConfig.samples = 16;
         new LwjglApplication(new SquaresGame(), appConfig);
 
     }
