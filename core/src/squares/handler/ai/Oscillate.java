@@ -17,6 +17,7 @@ public class Oscillate extends SteeringBehavior {
     public Enums.UnitMovement behave() {
         if (random().nextInt(1) == 0 && handlerDelegate().getTransformComponent().x != handlerDelegate().getComfort().x) handlerDelegate().getComfortable();
         if (handlerDelegate().getTransformComponent().x != handlerDelegate().getComfort().x) {
+            if(handlerDelegate().inFrontOfComrade()) return Enums.UnitMovement.North;
             return handlerDelegate().getTransformComponent().x < handlerDelegate().getComfort().x ? Enums.UnitMovement.East : Enums.UnitMovement.West;
         }
         if (handlerDelegate().currentDirection() == Enums.UnitMovement.East || handlerDelegate().currentDirection() == Enums.UnitMovement.West) {

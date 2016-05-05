@@ -33,8 +33,7 @@ import squares.components.spells.Spell;
 import squares.handler.CharacterHandler;
 import squares.handler.KeyMap;
 import squares.handler.enemy.GrappleTurret;
-import squares.handler.enemy.MechanicEnemy;
-import squares.handler.enemy.SimpleMind;
+import squares.handler.enemy.Mechanic;
 import squares.handler.UserInputHandler;
 import squares.stages.MainStage;
 import squares.stages.MenuStage;
@@ -74,7 +73,7 @@ public class SquaresGame extends Game {
 
     private static final float RE_QUEUE_PHASE_TIMEOUT = 10f;
     private static final float ROUND_PHASE_TIME_OUT = 10f;
-    private static final float COUNT_DOWN_PHASE_TIME_OUT = 3.5f;
+    private static final float COUNT_DOWN_PHASE_TIME_OUT = 2.5f;
 
     private static final float BUTTON_START_X_POSITION = 170;
     private static final float BUTTON_Y_HEIGHT = 840;
@@ -241,24 +240,31 @@ public class SquaresGame extends Game {
 
     private void initMainStage() {
         Entity playerOne = initPlayer(TileTypes.GreenPlayerOccupied, TileTypes.BlueTile, 2, 2);
-        Entity turretOne = initPlayer(TileTypes.VioletPlayerOccupied, TileTypes.RedTile, 5, 3);
+        Entity mechanic = initPlayer(TileTypes.PurplePlayerOccupied, TileTypes.RedTile, 9, 4);
+        Entity turretOne = initPlayer(TileTypes.VioletPlayerOccupied, TileTypes.RedTile, 6, 3);
         Entity turretTwo = initPlayer(TileTypes.CoralPlayerOccupied, TileTypes.RedTile, 7, 1);
 
         CharacterEntity playerCharacter = new PCPlayerCharacter(playerOne, TileTypes.GreenPlayerOccupied);
+
+        CharacterEntity mechanicCharacter = new EnemyCharacter(mechanic, TileTypes.PurplePlayerOccupied);
         CharacterEntity coralEnemy = new EnemyCharacter(turretTwo, TileTypes.CoralPlayerOccupied);
         CharacterEntity violetEnemy = new EnemyCharacter(turretOne, TileTypes.VioletPlayerOccupied);
 
         violetEnemy.getAllergies().addAll(TileTypes.GreenPlayerOccupied);
         coralEnemy.getAllergies().addAll(TileTypes.GreenPlayerOccupied);
+        mechanicCharacter.getAllergies().addAll(TileTypes.GreenPlayerOccupied);
 
         armTurret(violetEnemy);
-        armEnemies(coralEnemy);
+        armTurret(coralEnemy);
+        armEnemies(mechanicCharacter);
 
         CharacterHandler playerHandler = new UserInputHandler(playerCharacter, gridField, KeyMap.RED_DEFAULT());
-        CharacterHandler coralHandler = new MechanicEnemy(coralEnemy, gridField);
-        CharacterHandler violetHandler = new GrappleTurret(violetEnemy, gridField);
 
-        Array<CharacterHandler> handlers = Array.with(violetHandler, coralHandler, playerHandler);
+        CharacterHandler coralHandler = new GrappleTurret(coralEnemy, gridField);
+        CharacterHandler violetHandler = new GrappleTurret(violetEnemy, gridField);
+        CharacterHandler mechanicHandler = new Mechanic(mechanicCharacter, gridField);
+
+        Array<CharacterHandler> handlers = Array.with(violetHandler, coralHandler, mechanicHandler, playerHandler);
 
         mainCharacter = playerCharacter;
         roundStage = initUiView(new ScreenViewport(), handlers, playerCharacter);
@@ -268,19 +274,13 @@ public class SquaresGame extends Game {
     }
 
     private void armEnemies(CharacterEntity character) {
-        for (int i = 0; i < 5; i++) {
-            Entity blasterSpell = boomerangGenerator.makeSpell(60);
-            blasterSpell.getComponent(Spell.class).coolDown = .1f;
-            character.getPlayerComponent().queueSpell(blasterSpell);
-        }
-
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 500; i++) {
             Entity blasterSpell = blasterThreeGenerator.makeSpell(60);
             blasterSpell.getComponent(Spell.class).coolDown = .1f;
             character.getPlayerComponent().queueSpell(blasterSpell);
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 500; i++) {
             character.getPlayerComponent().queueSpell(wideSwordGenerator.makeSpell(80));
         }
 
@@ -407,7 +407,7 @@ public class SquaresGame extends Game {
         spriteBatch.begin();
         countDownFont.setColor(Color.WHITE);
 
-        countDownFont.draw(spriteBatch, ((int) passedTime) + "", CENTER_X, CENTER_Y, 40f, Align.center, false);
+        countDownFont.draw(spriteBatch, (3 - (int) passedTime) + "", CENTER_X, CENTER_Y, 40f, Align.center, false);
         spriteBatch.end();
     }
 }

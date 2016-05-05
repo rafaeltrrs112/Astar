@@ -23,7 +23,8 @@ public class Enums {
         BombOneOccupied(Color.ORANGE),
         BombTwoOccupied(Color.PINK),
         BoomerangOccupied(Color.MAROON),
-        GrappleOccupied(Color.BROWN);
+        GrappleOccupied(Color.BROWN),
+        PurplePlayerOccupied(Color.PURPLE);
 
         private final Color color;
 
@@ -31,7 +32,7 @@ public class Enums {
             return color;
         }
 
-        TileTypes(Color color){
+        TileTypes(Color color) {
             this.color = color;
         }
     }
@@ -66,13 +67,18 @@ public class Enums {
             return yIncrement;
         }
 
-        public TravelDirection flip(){
-            switch(this){
-                case LEFT: return RIGHT;
-                case RIGHT: return LEFT;
-                case UP: return DOWN;
-                case DOWN: return UP;
-                default: throw new AssertionError("Invalid Direction type " + this.getClass());
+        public TravelDirection flip() {
+            switch (this) {
+                case LEFT:
+                    return RIGHT;
+                case RIGHT:
+                    return LEFT;
+                case UP:
+                    return DOWN;
+                case DOWN:
+                    return UP;
+                default:
+                    throw new AssertionError("Invalid Direction type " + this.getClass());
             }
         }
     }

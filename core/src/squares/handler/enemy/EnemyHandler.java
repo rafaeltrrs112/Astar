@@ -48,7 +48,7 @@ abstract public class EnemyHandler extends UserInputHandler {
 
     abstract boolean attackPattern();
 
-    protected final boolean comradeInLane() {
+    public final boolean comradeInLane() {
         Array<Entity> lane = gridField.get((int) transformComponent.y);
         for (Entity e : lane) {
             TileComponent tileComponent = e.getComponent(TileComponent.class);
@@ -129,6 +129,36 @@ abstract public class EnemyHandler extends UserInputHandler {
                 TileComponent tileComponent = tileMapper.get(e);
                 if(tileComponent.isOccupied() && tileComponent.occupier.key.occupyType == Enums.TileTypes.GreenPlayerOccupied &&
                         tileComponent.occupier.key.stunned()) return true;
+            }
+        }
+        return false;
+    }
+
+    public final boolean behindComrade() {
+        Array<Entity> lane = gridField.get((int) transformComponent.y);
+        for (Entity e : lane) {
+            TileComponent tileComponent = e.getComponent(TileComponent.class);
+            if (tileComponent.isOccupied() && tileComponent.occupier.key.occupyType != Enums.TileTypes.GreenPlayerOccupied && tileComponent.occupier.key.occupyType != getCharacter().occupyType()) {
+                System.out.println(tileComponent.occupier.key.occupyType);
+                if (lane.indexOf(e, true) == transformComponent.x - 1) return true;
+            } else if (tileComponent.isOccupied()) {
+                System.out.println(tileComponent.occupier.key.occupyType);
+
+            }
+        }
+        return false;
+    }
+
+    public final boolean inFrontOfComrade() {
+        Array<Entity> lane = gridField.get((int) transformComponent.y);
+        for (Entity e : lane) {
+            TileComponent tileComponent = e.getComponent(TileComponent.class);
+            if (tileComponent.isOccupied() && tileComponent.occupier.key.occupyType != Enums.TileTypes.GreenPlayerOccupied && tileComponent.occupier.key.occupyType != getCharacter().occupyType()) {
+                System.out.println(tileComponent.occupier.key.occupyType);
+                if (lane.indexOf(e, true) == transformComponent.x + 1) return true;
+            } else if (tileComponent.isOccupied()) {
+                System.out.println(tileComponent.occupier.key.occupyType);
+
             }
         }
         return false;

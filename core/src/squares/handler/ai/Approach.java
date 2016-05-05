@@ -15,15 +15,26 @@ public class Approach extends Align {
 
     @Override
     public Enums.UnitMovement behave() {
-        if (!handlerDelegate().playerInLane()) {
-            return super.behave();
-        } else {
-            if (handlerDelegate().getComfort().x != 5) {
-                handlerDelegate().getComfort().x -= 1;
+        if (handlerDelegate().getTransformComponent().x != 5) {
+            handlerDelegate().updatePrev();
+            if ((handlerDelegate().getTransformComponent().x == 7 ||
+                    handlerDelegate().getTransformComponent().x == 8)
+                    && handlerDelegate().behindComrade()) {
+                return Enums.UnitMovement.South;
             }
             return rushForward();
+        } else if (!handlerDelegate().playerInLane()) {
+            handlerDelegate().updatePrev();
+            System.out.println("Not in lane!");
+            System.out.println("Going " + super.behave());
+            return super.behave();
         }
+        handlerDelegate().updatePrev();
+
+        return super.behave();
     }
+
+
 
     private Enums.UnitMovement rushForward() {
         return Enums.UnitMovement.West;

@@ -17,9 +17,6 @@ public class Align extends SteeringBehavior {
 
     @Override
     public Enums.UnitMovement behave() {
-        if (handlerDelegate().getTransformComponent().x != handlerDelegate().getComfort().x) {
-            return handlerDelegate().getTransformComponent().x < handlerDelegate().getComfort().x ? Enums.UnitMovement.East : Enums.UnitMovement.West;
-        }
         for (Array<Entity> lane : gridField) {
             for (Entity e : lane) {
                 TileComponent tileComponent = e.getComponent(TileComponent.class);

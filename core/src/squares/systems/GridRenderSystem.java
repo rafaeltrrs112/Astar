@@ -62,6 +62,10 @@ public class GridRenderSystem extends IteratingSystem {
                 drawRect(Color.CORAL, transformComponent);
                 drawHealth(tileComponent, transformComponent);
                 break;
+            case PurplePlayerOccupied:
+                drawRect(Color.PURPLE, transformComponent);
+                drawHealth(tileComponent, transformComponent);
+                break;
             case LongSwordOccupied:
             case ShortSwordOccupied:
             case WideSwordOccupied:
